@@ -1,0 +1,38 @@
+syntax = "proto3";
+
+package room.v1;
+
+option go_package = ".;room";
+
+import "google/protobuf/empty.proto";
+
+service RoomService {
+	rpc CreateRoom (CreateRoomRequest) returns (CreateRoomResponse);
+	rpc GetAllRoom (google.protobuf.Empty) returns (GetALLRoomResponse);
+	rpc GetRoom (GetRoomRequest) returns (GetRoomResponse);
+}
+
+message Room {
+	string id = 1;
+	string name = 2;
+}
+
+message CreateRoomRequest {
+	string name = 1;
+}
+
+message CreateRoomResponse {
+	Room room = 1;
+}
+
+message GetALLRoomResponse {
+	repeated Room rooms = 1;
+}
+
+message GetRoomRequest {
+	string id = 1;
+}
+
+message GetRoomResponse {
+	Room room = 1;
+}
