@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package chat.v1;
+
+option go_package = ".;chat";
+
+import "google/protobuf/empty.proto";
+
+service ChatService {
+	rpc SendMessage (SendMessageRequest) returns (google.protobuf.Empty);
+	rpc GetMessages (GetMessagesRequest) returns (stream GetMessagesResponse);
+}
+
+message SendMessageRequest {
+	string room_id = 1;
+	string message = 2;
+}
+
+message GetMessagesRequest {
+	string room_id = 1;
+}
+
+message GetMessagesResponse {
+	string message = 1;
+}
