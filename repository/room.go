@@ -37,3 +37,43 @@ func (r *RoomRepository) Store(m *model.Room) error {
 
 	return nil
 }
+
+func (r *RoomRepository) FindAll() ([]*model.Room, error) {
+	query := `
+	select
+		id,
+		name,
+		created_at,
+		updated_at
+	from
+		rooms
+	`
+
+	var rooms []*model.Room
+	if err := r.db.Select(&rooms, query); err != nil {
+		return nil, err
+	}
+
+	return  rooms, nil
+}
+
+func (r *RoomRepository) FindByID(id string) (*model.Room, error) {
+	query := `
+	select
+		id,
+		name,
+		created_at,
+		updated_at
+	from
+		rooms
+	where
+		id = ?
+	`
+
+	room := &model.Room{}
+	if err := r.db.Get(room, query, id); err != nil {
+		return nil, err
+	}
+
+	return  room, nil
+}

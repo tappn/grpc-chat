@@ -33,7 +33,7 @@ func (r *Room) CreateRoom(ctx context.Context, req *room.CreateRoomRequest) (*ro
 	}
 
 	if err := r.repo.Store(m); err != nil {
-		return nil, status.Errorf(codes.InvalidArgument, err.Error())
+		return nil, status.Errorf(codes.Internal, err.Error())
 	}
 	resp := &room.CreateRoomResponse{
 		Room: &room.Room{
@@ -41,13 +41,39 @@ func (r *Room) CreateRoom(ctx context.Context, req *room.CreateRoomRequest) (*ro
 			Name: m.Name,
 		},
 	}
-	return resp, status.Errorf(codes.OK, "ok")
+	return resp, nil
 }
 
 func (r *Room) GetAllRoom(context.Context, *emptypb.Empty) (*room.GetALLRoomResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetAllRoom not implemented")
+	rooms, err := r.repo.FindAll()
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, err.Error())
+	}
+
+	var resp room.GetALLRoomResponse
+	for _, v := range rooms {
+		r := &room.Room{
+			Id:   v.ID,
+			Name: v.Name,
+		}
+		resp.Rooms = append(resp.Rooms, r)
+	}
+
+	return &resp, nil
 }
 
-func (r *Room) GetRoom(context.Context, *room.GetRoomRequest) (*room.GetRoomResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetRoom not implemented")
+func (r *Room) GetRoom(ctx context.Context, req *room.GetRoomRequest) (*room.GetRoomResponse, error) {
+	rooms, err := r.repo.FindByID(req.GetId())
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, err.Error())
+	}
+
+	resp := &room.GetRoomResponse{
+		Room: &room.Room{
+			Id:   rooms.ID,
+			Name: rooms.Name,
+		},
+	}
+
+	return resp, nil
 }
