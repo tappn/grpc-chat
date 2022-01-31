@@ -1,0 +1,15 @@
+version: '3'
+services:
+  db:
+    image: mysql:5.7
+    container_name: chat_db
+    environment:
+      MYSQL_USER: root
+      MYSQL_DATABASE: chat_db
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+    ports:
+      - 3306:3306
+    volumes:
+      - ./db/data:/var/lib/mysql
+      - ./db/my.cnf:/etc/mysql/conf.d/my.cnf
+    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
