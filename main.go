@@ -11,6 +11,7 @@ import (
 	"github.com/joho/godotenv"
 
 	"github.com/jmoiron/sqlx"
+	"github.com/tappn/grpc-chat/gen/go/chat/v1"
 	"github.com/tappn/grpc-chat/gen/go/room/v1"
 	"github.com/tappn/grpc-chat/handler"
 	"github.com/tappn/grpc-chat/repository"
@@ -27,7 +28,9 @@ func main() {
 	grpcServer := grpc.NewServer(opts...)
 	db := Connect()
 	roomRepo := repository.NewRoomRepository(db)
+	msgRepo := repository.NewMessageRepository(db)
 	room.RegisterRoomServiceServer(grpcServer, handler.NewRoomHandler(roomRepo))
+	chat.RegisterChatServiceServer(grpcServer, handler.NewChatHandler(msgRepo, roomRepo))
 	log.Println("------ start grpc server ------")
 	grpcServer.Serve(listen)
 }
