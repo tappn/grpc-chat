@@ -8,7 +8,7 @@ CREATE TABLE rooms(
 
 CREATE TABLE messages(
   id              VARCHAR(26)             NOT NULL,
-  room_id		  INT					  NOT NULL,
+  room_id		  VARCHAR(26)			  NOT NULL,
   message         VARCHAR(100)            NOT NULL,
   created_at      DATETIME                NOT NULL,
   updated_at      DATETIME                NOT NULL,
