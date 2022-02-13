@@ -39,3 +39,24 @@ func (r *MessageRepository) Store(c *model.Message) error {
 
 	return nil
 }
+
+func (r *MessageRepository) FindAll(roomID string, msgID string) ([]*model.Message, error) {
+	query := `
+	select
+		id,
+		room_id,
+		message
+	from
+		messages
+	where
+		room_id = ?
+		and id > ?
+	`
+
+	var mm []*model.Message
+	if err := r.db.Select(&mm, query, roomID, msgID); err != nil {
+		return nil, err
+	}
+
+	return mm, nil
+}

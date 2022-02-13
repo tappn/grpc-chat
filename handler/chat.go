@@ -46,3 +46,24 @@ func (h *Chat) SendMessage(ctx context.Context, req *chat.SendMessageRequest) (*
 
 	return &emptypb.Empty{}, nil
 }
+
+func (h *Chat) GetMessages(req *chat.GetMessagesRequest, stream chat.ChatService_GetMessagesServer) error {
+	var latestID string
+	for {
+		mm, err := h.mr.FindAll(req.RoomId, latestID)
+		if err != nil {
+			return err
+		}
+		for _, v := range mm {
+			res := &chat.GetMessagesResponse{
+				Message: v.Message,
+			}
+			if err := stream.Send(res); err != nil {
+				return err
+			}
+		}
+		if len(mm) != 0 {
+			latestID = mm[len(mm)-1].ID
+		}
+	}
+}
